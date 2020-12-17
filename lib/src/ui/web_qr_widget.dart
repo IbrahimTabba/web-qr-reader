@@ -67,7 +67,10 @@ class _WebQrReaderState extends State<WebQrReader> {
     return SizedBox(
         width: widget.windowWidth,
         height: widget.windowHeight,
-        child: HtmlElementView(key: UniqueKey(), viewType: 'flutter-qr-code'));
+        child:
+          kIsWeb?
+          HtmlElementView(key: UniqueKey(), viewType: 'flutter-qr-code'):
+          Container());
   }
 
   _qrCheck() async {
