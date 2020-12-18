@@ -21,9 +21,11 @@ class WebQrReader extends StatefulWidget {
 
 class _WebQrReaderState extends State<WebQrReader> {
   var _rendered = false;
+  QrValue _lastValue;
   IFrameElement _iFrameElement;
   @override
   void initState() {
+    _lastValue = QrValue.empty();
     super.initState();
     if(kIsWeb){
       WidgetsBinding.instance.addPostFrameCallback((_) async{
@@ -49,14 +51,15 @@ class _WebQrReaderState extends State<WebQrReader> {
               (int viewId) => _iFrameElement
       );
       widget.controller?.addListener(() {
-        if(widget.controller.value.isCameraEnabled){
+        if(widget.controller.value.isCameraEnabled && !_lastValue.isCameraEnabled){
           if(_iFrameElement.contentWindow!=null)
             _iFrameElement.contentWindow.postMessage(json.encode({"action":"play"}), "*");
         }
-        else{
+        else if(!widget.controller.value.isCameraEnabled && _lastValue.isCameraEnabled){
           if(_iFrameElement.contentWindow!=null)
             _iFrameElement.contentWindow.postMessage(json.encode({"action":"pause"}), "*");
         }
+        _lastValue = widget.controller.value??_lastValue;
       });
       _qrCheck();
     }
@@ -65,8 +68,8 @@ class _WebQrReaderState extends State<WebQrReader> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        width: widget.windowWidth,
-        height: widget.windowHeight,
+        width: widget.windowWidth+16.0,
+        height: widget.windowHeight+16.0,
         child: HtmlElementView(key: UniqueKey(), viewType: 'flutter-qr-code'));
   }
 
@@ -76,7 +79,7 @@ class _WebQrReaderState extends State<WebQrReader> {
           data.data != null &&
           "${data.data}".startsWith("(qr-code):")) {
         if (widget.controller != null)
-          widget.controller._scanUpdateController.sink.add("${data.data}".replaceAll("(qr-code):", ""));
+          widget.controller.newQrValue("${data.data}".replaceAll("(qr-code):", ""));
       }
     });
   }
@@ -89,11 +92,22 @@ class WebQrReaderController extends ValueNotifier<QrValue> {
 
   Stream<String> get scannedDataStream => _scanUpdateController.stream;
 
+  newQrValue(String qrContent){
+    if(!value.isCameraEnabled)
+      return;
+    value = value.copyWith(qrContent: qrContent);
+    _scanUpdateController.sink.add(qrContent);
+  }
+
   play(){
+    if(value.isCameraEnabled)
+      return;
     value = value.copyWith(isCameraEnabled: true);
   }
 
   pause(){
+    if(!value.isCameraEnabled)
+      return;
     value = value.copyWith(isCameraEnabled: false);
   }
 
@@ -105,15 +119,18 @@ class WebQrReaderController extends ValueNotifier<QrValue> {
 
 class QrValue{
   final bool isCameraEnabled;
+  final String qrContent;
 
-  QrValue({this.isCameraEnabled});
+  QrValue({this.isCameraEnabled , this.qrContent});
 
   const QrValue.empty():
-      isCameraEnabled = true;
+      isCameraEnabled = true,
+      qrContent = null;
 
-  copyWith({isCameraEnabled}){
+  copyWith({isCameraEnabled , qrContent}){
     return QrValue(
-      isCameraEnabled: isCameraEnabled??this.isCameraEnabled
+      isCameraEnabled: isCameraEnabled??this.isCameraEnabled,
+      qrContent: qrContent??this.qrContent
     );
   }
 

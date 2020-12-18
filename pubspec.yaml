@@ -1,8 +1,11 @@
 name: web_qr_reader
-description: A new Flutter package.
+description: >-
+  QRCode reader library for flutter web.
+  Since all flutter QRCode reader plugins works only on Android/IOS and not supported for web.
+  This library provides all basic functionality to implement QRReader for web (data stream / pause / resume).
 version: 0.0.1
-author:
-homepage:
+homepage: https://github.com/IbrahimTabba/web-qr-reader
+author: Ibrahim Tabba
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

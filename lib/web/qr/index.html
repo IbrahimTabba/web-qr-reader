@@ -1,20 +1,10 @@
 <html>
 <head>
-  <meta name="description" content="QR Code scanner" />
-  <meta name="keywords" content="qrcode,qr code,scanner,barcode,javascript" />
-  <meta name="language" content="English" />
-  <meta name="Revisit-After" content="1 Days"/>
-  <meta name="robots" content="index, follow"/>
-  <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Web QR</title>
-
   <style type="text/css">
 body{
     width:0px;
     height:0px;
-    margin-left: auto;
-    margin-right: auto;
+    margin:0px;
 }
 #main{
     background:white;
@@ -33,18 +23,15 @@ body{
 #outdiv
 {
 	border: solid;
-    height:90%;
-    width:90%;
-    margin: auto;
-	border-width: 3px 3px 3px 3px;
+    height:100%;
+    width:100%;
+	border-width: 1px 1px 1px 1px;
 
 }
 #v
 {
     height:100%;
     width:100%;
-    margin: auto;
-
 }
 
 </style>
@@ -58,7 +45,7 @@ body{
 <div id="main">
   <div id="header"></div>
   <div id="mainbody"><div id="outdiv"></div></div>
-  <canvas id="qr-canvas" width="500" height="500"></canvas>
+  <canvas id="qr-canvas"></canvas>
   <script type="text/javascript">load();</script>
   <script type="text/javascript">
         window.addEventListener("message",(event)=>{
