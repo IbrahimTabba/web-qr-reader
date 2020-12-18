@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +69,8 @@ class _WebQrReaderState extends State<WebQrReader> {
     return SizedBox(
         width: widget.windowWidth+16.0,
         height: widget.windowHeight+16.0,
-        child: HtmlElementView(key: UniqueKey(), viewType: 'flutter-qr-code'));
+        child: kIsWeb?
+        HtmlElementView(key: UniqueKey(), viewType: 'flutter-qr-code'):Container());
   }
 
   _qrCheck() async {
